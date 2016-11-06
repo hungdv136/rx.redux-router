@@ -17,7 +17,7 @@ public protocol Routable {
     func changeRouteSegment(_ from: String, to: String, animated: Bool, completion: @escaping RoutingCompletionHandler) -> Routable
 }
 
-extension Routable {
+public extension Routable {
 
     public func pushRouteSegment(_ routeElementId: String, animated: Bool, completion: @escaping RoutingCompletionHandler) -> Routable {
         fatalError("This routable cannot change segments. You have not implemented it.")
