@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.author           = { 'Hung Dinh' => 'hungdv136@gmail.com' }
   s.source           = { :git => 'https://github.com/hungdv136/RxReduxRouter.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '10.0'
+  s.ios.deployment_target = '9.0'
 
   s.source_files = 'RxReduxRouter/**/*.swift'
 
