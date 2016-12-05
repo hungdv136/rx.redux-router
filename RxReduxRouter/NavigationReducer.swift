@@ -9,6 +9,7 @@
 import RxRedux
 
 public struct NavigationReducer<T: StateType>: Reducer {
+    public init() {}
     
     public func handleAction(state: T, action: Action) -> T {
         guard let action = action as? NavigationActions else { return state }
@@ -19,14 +20,14 @@ public struct NavigationReducer<T: StateType>: Reducer {
             
             newState.navigationState.route = route
             newState.navigationState.changeRouteAnimated = animated
-            return state
+            return newState as! T
             
          case .setRouteSpecificData(let route, let data):
             guard var newState = state as? HasNavigationState else { return state }
             
             let routeHash = RouteHash(route: route)
             newState.navigationState.routeSpecificState[routeHash] = data
-            return state
+            return newState as! T
         }
     }
 }
