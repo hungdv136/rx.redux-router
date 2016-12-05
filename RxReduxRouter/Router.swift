@@ -23,6 +23,7 @@ open class Router<State: StateType> {
     public init(store: Store<State>, rootRoutable: Routable, stateSelector: @escaping NavigationStateSelector) {
         self.store = store 
         self.routables.append(rootRoutable)
+        
         store.state.map { stateSelector($0) }
         .distinctUntilChanged { RouteHash(route: $0.0.route) == RouteHash(route: $0.1.route) }
         .drive(onNext: { [weak self] state in

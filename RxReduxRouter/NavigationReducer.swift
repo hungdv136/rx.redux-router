@@ -2,52 +2,31 @@
 //  NavigationReducer.swift
 //  Meet
 //
-//  Created by Benjamin Encz on 11/11/15.
-//  Copyright © 2015 DigiTales. All rights reserved.
+//  Created by Hung Dinh on 12/02/16.
+//  Copyright © 2016 chucuoi.net. All rights reserved.
 //
 
 import RxRedux
 
-/** 
- The Navigation Reducer handles the state slice concerned with storing the current navigation
- information. Note, that this reducer is **not** a *top-level* reducer, you need to use it within
- another reducer and pass in the relevant state slice. Take a look at the specs to see an
- example set up. 
- */
-public struct NavigationReducer {
-
-    public static func handleAction(_ action: Action, state: NavigationState?) -> NavigationState {
-        let state = state ?? NavigationState()
-
-        switch action {
-        case let action as SetRouteAction:
-            return setRoute(state, setRouteAction: action)
-        case let action as SetRouteSpecificData:
-            return setRouteSpecificData(state, route: action.route, data: action.data)
-        default:
-            break
+public struct NavigationReducer<T: StateType>: Reducer {
+    
+    public func handleAction(state: T, action: Action) -> T {
+        guard let action = action as? NavigationActions else { return state }
+        
+         switch action {
+         case .setRouteAction(let route, let animated ):
+            guard var newState = state as? HasNavigationState else { return state }
+            
+            newState.navigationState.route = route
+            newState.navigationState.changeRouteAnimated = animated
+            return state
+            
+         case .setRouteSpecificData(let route, let data):
+            guard var newState = state as? HasNavigationState else { return state }
+            
+            let routeHash = RouteHash(route: route)
+            newState.navigationState.routeSpecificState[routeHash] = data
+            return state
         }
-
-        return state
     }
-
-    static func setRoute(_ state: NavigationState, setRouteAction: SetRouteAction) -> NavigationState {
-        var state = state
-
-        state.route = setRouteAction.route
-        state.changeRouteAnimated = setRouteAction.animated
-
-        return state
-    }
-
-    static func setRouteSpecificData(_ state: NavigationState, route: Route,data: Any) -> NavigationState {
-        let routeHash = RouteHash(route: route)
-        
-        var state = state
-        
-        state.routeSpecificState[routeHash] = data
-        
-        return state
-    }
-
 }
